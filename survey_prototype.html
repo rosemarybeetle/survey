@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<link rel="stylesheet" type="text/css" href="survey.css" media="all">
+<link rel="stylesheet" type="text/css" href="http://vam.ac.uk/_designs/new-squiz/css/main.css" media="all">
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js" type="text/javascript"></script>
+
+<head>
+	<title>Survey</title>
+	</head>
+<body>
+<header>Heeellllllo</header>
+<p>Hello world</p>
+<script>
+var launch_delay=2000;// 8 second delay time
+var open_dur=1000; // drawer opening duration
+window.onload=function () {	
+	var survey_height=300;
+	var inc=5;
+	var inc_op=.02;
+	var bx_h="";
+	q_num=4;// how many questions
+	for (var i = 1; i <= q_num; i++) {
+		e="ans_"+i;
+		document.getElementById(e).style.opacity=0;
+	}
+	document.getElementById("survey_box").style.height="0px";
+	console.log("Height"+survey_height);
+	var ddd=new Date();
+	window.time=ddd.getTime(); // get current time
+	var rand=Math.round( Math.random()*2000);
+	window.session_id=time+'-'+rand;
+	var exp = window.time + (60*60*1000);
+    var expires = "expires="+exp;
+    if  ( document.cookie.indexOf('session_id')<0 ){ 
+	document.cookie="session_id="+session_id+";"+expires+";path=/";
+	console.log ('session_id='+window.session_id);
+	var id=$.cookie('session_id');
+	console.log('id= '+id);
+	console.log(document.cookie);
+	console.log('###############');
+	var myVar;
+	var opac=0;
+	var upp;
+	setTimeout(function(){ console.log("launch"); myVar = setInterval(function(){ box_growth() }, 15);}, launch_delay);
+	current_height=0;
+	function box_growth() {
+		document.getElementById("survey_box").style.opacity=1;
+		current_height+=inc;
+		console.log (current_height);
+		bx_h=current_height+"px";
+ 		console.log ("bx_h = "+bx_h);
+		if (current_height< survey_height) {
+ 	
+ 		document.getElementById("survey_box").style.height=bx_h;
+ 		 }  else {
+ 		 	
+ 		 	upp = setInterval(function(){ fade_up_qbx();}, 5);
+ 		 	console.log("growth stopped")
+ 		stop_growth();
+ 		}
+ 	}
+
+	}
+	function stop_growth() {
+		  clearInterval(myVar);
+	}
+	function fade_up_qbx() {
+		if (opac<1) {
+			opac+=(inc_op);
+			console.log ("opac = "+opac);
+			document.getElementById("question_box").style.opacity=opac;
+			document.getElementById("greeting").style.opacity=opac;
+		} else {
+		clearInterval(upp)
+		opac=0;//reset default opacity 
+		document.getElementById("question_box").style.opacity=1;
+		document.getElementById("greeting").style.opacity=1;
+		upp=setInterval(function(){ fade_up_abx(1);}, 5);
+		console.log("fade up stopped for question_box");
+		}
+	} // end fade_up_qbx()
+	function fade_up_abx(j) {
+		if (j<=q_num) {
+		
+		abxj="ans_"+j;
+		if (opac<1) {
+			console.log("inside opac incrementer in abx")
+			opac+=(inc_op);
+			console.log ("opac = "+opac);
+			document.getElementById(abxj).style.opacity=opac;
+		} else {
+		opac=0;
+		clearInterval(upp)
+		console.log("fade up stopped for "+j);
+		f=(j+1);
+		upp=setInterval(function(){ fade_up_abx(f);}, 3);
+		}
+		} else {
+			clearInterval(upp);	//breaks the loop
+			opac=1; // prepare to fade down again later
+		}
+	} // end fade_up_abx()
+		
+} // end onLoad()
+</script>
+<!-- @@@@@@@@@@@@@@@@@@@  html code starts here @@@@@@@@@@@@@@@@@@@@@ -->
+<div class="survey_box non_vis" id="survey_box">
+	<div id="greeting" class="g_box non_vis">
+		Hello
+	</div>
+	<div id="question_box" class="q_box non_vis">
+		Why are you visiting the V&A website today?
+	</div>
+	<div>
+		<input class='surv_butt more' id="ans_1" name="ans_1" type="button" value='I want to do in-depth research'>
+		<input class='surv_butt' id="ans_2" name="ans_2" type="button" value='I came for inspiration'>
+		<input class='surv_butt' id="ans_3" name="ans_3" type="button" value='I want to plan a visit or buying tickets'>
+		<input class='surv_butt' id="ans_4" name="ans_4" type="button" value="I found something interesting I haven't seen before">
+	</div>
+</div>
+</body>
+</html>
